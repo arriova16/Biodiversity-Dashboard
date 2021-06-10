@@ -3,15 +3,16 @@ function buildPanel(element) {
     d3.json("samples.json").then((data) => {
         var metadata = data.metadata;
 
-        var result = metadata.filter(subject => subject.id === element)[0];
+        var resultArray = metadata.filter(sampleObject => sampleObject.id === element);
+        var result = resultArray[0];
         // clear the panel
-    var demoPanel = d3.select("#sample-metadata");
-    demoPanel.html("");
+        var demoPanel = d3.select(`"#sample-metadata"`);
+        demoPanel.html("");
 
     
     
-    Object.entries(result[0]).forEach(subject => {
-        demoPanel.append("h5").text(`${subject[0]}: ${subject[1]}`);
+        Object.entries(result[0]).forEach(subject => {
+            demoPanel.append("h5").text(`${subject[0]}: ${subject[1]}`);
 
     });
 
@@ -28,37 +29,67 @@ function buildPanel(element) {
 
 
 function buildBubbles(element) {
-// //     // select the samples
-// //     // find the samples that match the element number that is passed in
+    d3.json("samples.json").then((data) => {
+        var samples = data.samples;
 
-// //     // create bar chart
-//     var trace1 = {
-//         x:
-//         y:
-//         text:
-//         name:
-//         type: "bar"
-//         orientation: "h"
-//     };
-//     var layout_1
+        var resultArray = samples.filter(sampleObject => sampleObject.id == element);
+        var result = resultArray[0]
+        var id = result.otu_ids;
+        var label = result.otu_labels;
+        var value = result.sample_values;
+        
 
-// //     // create bubble chart(same function as bar chart)
-//     var trace2 = {
-//         x:
-//         y:
-//         mode:
-//         marker:
-//         text:
-//     }
+        var barData = [
+            {
+                y: id.slice(0,10).map(otuID => `OTU ${otuID}`).reverse(),
+                x: value.slice(0,10).reverse(),
+                text: label.slice(0,10).reverse(),
+                type:"bar",
+                orientation:"h"
+            }
+        ];
 
-//     var layout_2 = {
 
-//     }
-// // }
+        var layout_1 = {
+            mtitle:"Top 10"
+            };
 
+        Plotly.newPlot("bar", barData, layout_1);
+        
+
+
+        var bubbleData = [
+            {
+                x: id,
+                y: value,
+                text: label,
+                mode: "markers",
+                marker: {
+                    color: id,
+                    size: value,
+                }
+
+            }
+        ];
+        var layout_2 = { 
+            xaxis: {title: "OTU ID"},
+
+        };
+        Plotly.plot("bubble", bubbleData, layout_2);
+
+//     // select the samples
+//     // find the samples that match the element number that is passed in
+
+//     // create bar chart
+    
+
+    // create bubble chart(same function as bar chart)
+
+});
+}
 function initialization() {
     // find names, populate dropdown, 
-    var dropdown = d3.select("#selDataset");
+    var dropDown = d3.select("#selDataset");
 
 
     d3.json("samples.json").then((data) => {
@@ -66,7 +97,7 @@ function initialization() {
         var sampleNames = data.names;
 
         sampleNames.forEach(function(name) {
-            dropdown.append("option").text(name).property("value");
+            dropDown.append("option").text(name).property("value");
         });
     
     // pass first sample call. build bubbles and pass first sample
