@@ -3,16 +3,16 @@ function buildPanel(element) {
     d3.json("samples.json").then((data) => {
         var metadata = data.metadata;
 
-        var resultArray = metadata.filter(sampleObject => sampleObject.id === element);
+        var resultArray = metadata.filter(sampleObject => sampleObject.id == element);
         var result = resultArray[0];
         // clear the panel
-        var demoPanel = d3.select(`"#sample-metadata"`);
+        var demoPanel = d3.select("#sample-metadata");
         demoPanel.html("");
 
     
     
-        Object.entries(result[0]).forEach(subject => {
-            demoPanel.append("h5").text(`${subject[0]}: ${subject[1]}`);
+        Object.entries(result).forEach(subject => {
+            demoPanel.append("p").text(`${subject[0]}: ${subject[1]}`);
 
     });
 
@@ -73,6 +73,9 @@ function buildBubbles(element) {
         ];
         var layout_2 = { 
             xaxis: {title: "OTU ID"},
+            margin: { t: 0 },
+            hovermode: "closet",
+
 
         };
         Plotly.plot("bubble", bubbleData, layout_2);
@@ -103,8 +106,9 @@ function initialization() {
     // pass first sample call. build bubbles and pass first sample
     
         const firstSubject = sampleNames[0];
-        buildBubbles(firstSubject);
         buildPanel(firstSubject);
+        buildBubbles(firstSubject);
+        
 });
 
 }
