@@ -74,7 +74,7 @@ function buildBubbles(element) {
         var layout_2 = { 
             xaxis: {title: "OTU ID"},
             margin: { t: 0 },
-            hovermode: "closet",
+            hovermode: "closest",
 
 
         };
