@@ -10,7 +10,9 @@ function buildPanel(element) {
         demoPanel.html("");
 
     
-    
+
+    // find the metadata number that matches element number
+    // take metadata and populate panel with what matches (need to run with a number)    
         Object.entries(result).forEach(subject => {
             demoPanel.append("p").text(`${subject[0]}: ${subject[1]}`);
 
@@ -24,21 +26,20 @@ function buildPanel(element) {
     
 
 
-    // find the metadata number that matches element number
-    // take metadata and populate panel with what matches (need to run with a number)
-
-
 function buildBubbles(element) {
-    d3.json("samples.json").then((data) => {
-        var samples = data.samples;
+// find the samples that match the element number that is passed in
 
+
+    d3.json("samples.json").then((data) => {
+     // select the samples        
+        var samples = data.samples;
         var resultArray = samples.filter(sampleObject => sampleObject.id == element);
         var result = resultArray[0]
         var id = result.otu_ids;
         var label = result.otu_labels;
         var value = result.sample_values;
         
-
+//     // create bar chart
         var barData = [
             {
                 y: id.slice(0,10).map(otuID => `OTU ${otuID}`).reverse(),
@@ -57,6 +58,7 @@ function buildBubbles(element) {
         Plotly.newPlot("bar", barData, layout_1);
         
 
+    // create bubble chart(same function as bar chart)
 
         var bubbleData = [
             {
@@ -80,13 +82,11 @@ function buildBubbles(element) {
         };
         Plotly.plot("bubble", bubbleData, layout_2);
 
-//     // select the samples
-//     // find the samples that match the element number that is passed in
 
-//     // create bar chart
+
+
     
 
-    // create bubble chart(same function as bar chart)
 
 });
 }
@@ -94,7 +94,7 @@ function initialization() {
     // find names, populate dropdown, 
     var dropDown = d3.select("#selDataset");
 
-
+ 
     d3.json("samples.json").then((data) => {
 
         var sampleNames = data.names;
@@ -103,8 +103,8 @@ function initialization() {
             dropDown.append("option").text(name).property("value");
         });
     
-    // pass first sample call. build bubbles and pass first sample
-    
+  
+  // find first sample name   
         const firstSubject = sampleNames[0];
         buildPanel(firstSubject);
         buildBubbles(firstSubject);
@@ -113,12 +113,8 @@ function initialization() {
 
 }
 
-    // find first sample name
 
-
-
-
-
+  // pass first sample call. build bubbles and pass first sample
 
 function optionChanged(element) {
     buildPanel(element);
